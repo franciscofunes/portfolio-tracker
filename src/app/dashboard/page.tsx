@@ -9,56 +9,30 @@ import { TradeList } from "@/components/trade/TradeList";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { usePortfolio } from "@/Contexts/PortfolioContext";
-import { BackendTrade } from "@/types/domain/trade";
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu } from "lucide-react";
+import { useState } from "react";
 
 export default function DashboardPage() {
-  const { isLoading, selectedPortfolioId } = usePortfolio();
-  const [trades, setTrades] = useState<BackendTrade[]>([]);
-  const [isLoadingTrades, setIsLoadingTrades] = useState(false);
+  const { 
+    isLoading, 
+    trades, 
+    isLoadingTrades, 
+    deleteTrade 
+  } = usePortfolio();
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    const fetchTrades = async () => {
-      if (!selectedPortfolioId) return;
-
-      setIsLoadingTrades(true);
-      try {
-        const response = await fetch(
-          `/api/portfolios/${selectedPortfolioId}/trades`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch trades");
-        }
-
-        const data = await response.json();
-        setTrades(data);
-      } catch (error) {
-        console.error("Error fetching trades:", error);
-      } finally {
-        setIsLoadingTrades(false);
-      }
-    };
-
-    fetchTrades();
-  }, [selectedPortfolioId]);
-
-  const refreshTrades = async () => {
-    if (selectedPortfolioId) {
-      const response = await fetch(
-        `/api/portfolios/${selectedPortfolioId}/trades`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setTrades(data);
-      }
+  const handleTradeDelete = async (tradeId: string) => {
+    try {
+      setIsDeleting(true);
+      await deleteTrade(tradeId);
+    } catch (error) {
+      console.error("Error deleting trade:", error);
+    } finally {
+      setIsDeleting(false);
     }
   };
-
-  const handleTradeDelete = refreshTrades;
-  const handleTradeEdit = refreshTrades;
 
   if (isLoading) {
     return (
@@ -92,7 +66,6 @@ export default function DashboardPage() {
       <Sidebar />
 
       <main className="flex-1 flex flex-col px-4 sm:px-6 md:px-8 lg:px-12 py-3 space-y-6 overflow-x-hidden">
-        {/* Modern gradient title section */}
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-3 px-6 mt-0 mb-2">
           <div className="absolute inset-0 bg-grid-white/15 bg-[size:20px_20px] opacity-30"></div>
           <div className="absolute -top-24 -right-24 h-32 w-32 rounded-full bg-pink-400 blur-3xl opacity-70"></div>
@@ -110,18 +83,17 @@ export default function DashboardPage() {
         <TopBar />
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Trades</h2>
-          {isLoadingTrades ? (
+          {isLoadingTrades || isDeleting ? (
             <div className="py-4">
               <Progress value={60} className="w-full" />
               <p className="text-sm text-muted-foreground mt-2 text-center">
-                Loading trades...
+                {isDeleting ? "Deleting trade..." : "Loading trades..."}
               </p>
             </div>
           ) : (
             <TradeList
               trades={trades}
               onTradeDelete={handleTradeDelete}
-              onTradeEdit={handleTradeEdit}
             />
           )}
         </section>
