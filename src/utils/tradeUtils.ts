@@ -4,7 +4,6 @@ export const mapTradeDataToCards = (trades: BackendTrade[]): TradeCardData[] => 
   const tradeCards: TradeCardData[] = [];
   
   trades.forEach((trade) => {
-    console.log("Trade data to map:", trade.id, trade.exitPrice);
     let profit = 0;
     if (trade.exitPrice) {
       profit = (trade.exitPrice - trade.price) * trade.quantity;

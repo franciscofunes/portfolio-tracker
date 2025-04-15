@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePortfolio } from "@/Contexts/PortfolioContext";
-import { useUpdateTrade } from "@/hooks/mutations/useUpdateTrade";
 import { EditTradeDialogProps } from "@/types/ui/EditTradeDialogProps";
 import { EditTradeFormValues, editTradeSchema } from "@/validations/trade";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +25,8 @@ export const EditTradeDialog = ({
   initialData,
   onSuccess,
 }: EditTradeDialogProps) => {
-  const { mutate, isPending } = useUpdateTrade();
+  const { updateTrade } = usePortfolio();
+  const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
@@ -57,28 +57,27 @@ export const EditTradeDialog = ({
     }
   }, [isOpen, initialData, reset]);
 
-  const { selectedPortfolioId } = usePortfolio();
-
-  const onSubmit = (data: EditTradeFormValues) => {
-    if (!selectedPortfolioId || !tradeId) {
-      setErrorMessage("Missing portfolio or trade ID");
+  const onSubmit = async (data: EditTradeFormValues) => {
+    if (!tradeId) {
+      setErrorMessage("Missing trade ID");
       return;
     }
   
-    mutate(
-      { portfolioId: selectedPortfolioId, tradeId, ...data },
-      {
-        onSuccess: () => {
-          setErrorMessage(null);
-          if (onSuccess) onSuccess();
-        },
-        onError: (error: any) => {
-          console.error("Failed to update trade:", error);
-          setErrorMessage(error?.response?.data?.error || "Failed to update trade");
-        }
-      }
-    );
+    setIsPending(true);
+    
+    try {
+      await updateTrade(tradeId, data);
+      setErrorMessage(null);
+      if (onSuccess) onSuccess();
+      onClose();
+    } catch (error: any) {
+      console.error("Failed to update trade:", error);
+      setErrorMessage(error?.message || "Failed to update trade");
+    } finally {
+      setIsPending(false);
+    }
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
