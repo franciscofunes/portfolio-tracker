@@ -9,6 +9,6 @@ export function useTrades(portfolioId: string | undefined) {
       const res = await api.get(`/portfolios/${portfolioId}/trades`);
       return res.data;
     },
-    enabled: !!portfolioId, // important to not run if undefined
+    enabled: !!portfolioId,
   });
 }

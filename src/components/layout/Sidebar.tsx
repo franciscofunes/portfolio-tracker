@@ -1,14 +1,13 @@
 "use client"
 
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import {
+  LayoutDashboard,
+  LogOutIcon
+} from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import {
-  CircleDollarSign,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react"
 
 const sidebarNavItems = [
   {
@@ -17,15 +16,10 @@ const sidebarNavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Portfolios",
-    href: "/dashboard/portfolios",
-    icon: CircleDollarSign,
-  },
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
+    title: "Exit",
+    href: "/",
+    icon: LogOutIcon,
+  }
 ]
 
 export default function Sidebar() {
