@@ -101,3 +101,11 @@ npx prisma db seed
 > This will run the seeding script and insert sample portfolios and trades into the database.
 
 ---
+
+### 4. Start the Development Server
+To start the development server, run:
+
+```bash
+pnpm run dev
+```
+This will start the Next.js development server and you can access the application in your browser at http://localhost:3000.
