@@ -1,21 +1,20 @@
 "use client";
 
+import { Footer } from "@/components/layout/Footer";
+import MobileSidebar from "@/components/layout/MobileSidebar";
 import Sidebar from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/Topbar";
 import PnlChart from "@/components/portfolio/PnlChart";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { usePortfolio } from "@/Contexts/PortfolioContext";
-import { useState, useEffect } from "react";
-import { BackendTrade } from "@/types/domain/trade";
 import { TradeList } from "@/components/trade/TradeList";
-import { Footer } from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { usePortfolio } from "@/Contexts/PortfolioContext";
+import { BackendTrade } from "@/types/domain/trade";
 import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const { isLoading, selectedPortfolioId } = usePortfolio();
-  const [loadingSeed, setLoadingSeed] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [trades, setTrades] = useState<BackendTrade[]>([]);
   const [isLoadingTrades, setIsLoadingTrades] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,7 +25,9 @@ export default function DashboardPage() {
 
       setIsLoadingTrades(true);
       try {
-        const response = await fetch(`/api/portfolios/${selectedPortfolioId}/trades`);
+        const response = await fetch(
+          `/api/portfolios/${selectedPortfolioId}/trades`
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch trades");
@@ -44,35 +45,11 @@ export default function DashboardPage() {
     fetchTrades();
   }, [selectedPortfolioId]);
 
-  const handleSeedData = async () => {
-    setLoadingSeed(true);
-    setErrorMessage(null);
-
-    try {
-      const response = await fetch("/api/seed", { method: "POST" });
-
-      if (!response.ok) throw new Error("Failed to seed data");
-
-      alert("Data seeded successfully!");
-
-      if (selectedPortfolioId) {
-        const tradesResponse = await fetch(`/api/portfolios/${selectedPortfolioId}/trades`);
-        if (tradesResponse.ok) {
-          const data = await tradesResponse.json();
-          setTrades(data);
-        }
-      }
-    } catch (error) {
-      setErrorMessage("Failed to seed data");
-      console.error("Seeding error:", error);
-    } finally {
-      setLoadingSeed(false);
-    }
-  };
-
   const refreshTrades = async () => {
     if (selectedPortfolioId) {
-      const response = await fetch(`/api/portfolios/${selectedPortfolioId}/trades`);
+      const response = await fetch(
+        `/api/portfolios/${selectedPortfolioId}/trades`
+      );
       if (response.ok) {
         const data = await response.json();
         setTrades(data);
@@ -94,14 +71,16 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-background relative">
-      {/* Mobile Hamburger Button */}
       <div className="md:hidden fixed top-4 left-4 z-50">
-        <Button variant="outline" size="icon" onClick={() => setSidebarOpen(true)}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setSidebarOpen(true)}
+        >
           <Menu className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -109,46 +88,52 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed md:static z-50 bg-white dark:bg-gray-900 h-full w-64 transform transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:flex`}
-      >
-        <div className="md:hidden p-4 flex justify-end">
-          <Button variant="ghost" onClick={() => setSidebarOpen(false)}>
-            <X className="h-5 w-5" />
-          </Button>
+      <MobileSidebar />
+      <Sidebar />
+
+      <main className="flex-1 flex flex-col px-4 sm:px-6 md:px-8 lg:px-12 py-3 space-y-6 overflow-x-hidden">
+        {/* Modern gradient title section */}
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-3 px-6 mt-0 mb-2">
+          <div className="absolute inset-0 bg-grid-white/15 bg-[size:20px_20px] opacity-30"></div>
+          <div className="absolute -top-24 -right-24 h-32 w-32 rounded-full bg-pink-400 blur-3xl opacity-70"></div>
+          <div className="absolute -bottom-8 -left-8 h-28 w-28 rounded-full bg-indigo-600 blur-3xl opacity-50"></div>
+
+          <div className="relative">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              Trading Dashboard
+            </h1>
+            <p className="text-indigo-100 mt-1 max-w-xl">
+              Track your trades, analyze performance, and grow your portfolio
+            </p>
+          </div>
         </div>
-        <Sidebar />
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col px-4 sm:px-6 md:px-8 lg:px-12 py-6 space-y-6 overflow-x-hidden">
         <TopBar />
-
-        <section className="space-y-4">
-          <Button variant="outline" onClick={handleSeedData} disabled={loadingSeed}>
-            {loadingSeed ? "Seeding..." : "Seed Data"}
-          </Button>
-          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-        </section>
-
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Trades</h2>
           {isLoadingTrades ? (
             <div className="py-4">
               <Progress value={60} className="w-full" />
-              <p className="text-sm text-muted-foreground mt-2 text-center">Loading trades...</p>
+              <p className="text-sm text-muted-foreground mt-2 text-center">
+                Loading trades...
+              </p>
             </div>
           ) : (
-            <TradeList trades={trades} onTradeDelete={handleTradeDelete} onTradeEdit={handleTradeEdit} />
+            <TradeList
+              trades={trades}
+              onTradeDelete={handleTradeDelete}
+              onTradeEdit={handleTradeEdit}
+            />
           )}
         </section>
 
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Charts</h2>
-          <PnlChart trades={trades.map(trade => ({ ...trade, type: trade.type as "BUY" | "SELL" }))} />
+          <PnlChart
+            trades={trades.map((trade) => ({
+              ...trade,
+              type: trade.type as "BUY" | "SELL",
+            }))}
+          />
         </section>
 
         <Footer />
