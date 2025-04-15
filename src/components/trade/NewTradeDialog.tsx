@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useCreateTrade } from "@/hooks/mutations/useCreateTrade";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -26,14 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssets } from "@/hooks/queries/useAssets";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const NewTradeDialog = () => {
   const [open, setOpen] = useState(false);
-  const { mutate, isPending } = useCreateTrade();
+  const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { selectedPortfolioId } = usePortfolio();
-  const queryClient = useQueryClient();
+  const { selectedPortfolioId, addTrade } = usePortfolio();
+  
   const {
     data: assets = [],
     isLoading: isLoadingAssets,
@@ -46,7 +44,6 @@ export const NewTradeDialog = () => {
     formState: { errors },
     reset,
     setValue,
-    watch,
   } = useForm<TradeFormValues>({
     resolver: zodResolver(tradeFormSchema),
     defaultValues: {
@@ -59,8 +56,6 @@ export const NewTradeDialog = () => {
       portfolioId: selectedPortfolioId || "",
     },
   });
-
-  const formPortfolioId = watch("portfolioId");
 
   useEffect(() => {
     if (selectedPortfolioId) {
@@ -86,15 +81,8 @@ export const NewTradeDialog = () => {
     }
   }, [assetsError]);
 
-  const onSubmit = (data: TradeFormValues) => {
+  const onSubmit = async (data: TradeFormValues) => {
     if (!data.portfolioId || data.portfolioId !== selectedPortfolioId) {
-      console.warn(
-        "Portfolio ID mismatch or missing! Form:",
-        data.portfolioId,
-        "Context:",
-        selectedPortfolioId
-      );
-
       data.portfolioId = selectedPortfolioId || "";
 
       if (!data.portfolioId) {
@@ -103,24 +91,21 @@ export const NewTradeDialog = () => {
       }
     }
 
-    mutate(data, {
-      onSuccess: () => {
-        setOpen(false);
-        reset();
-        setErrorMessage(null);
-
-        queryClient.invalidateQueries({
-          queryKey: ["trades", data.portfolioId],
-        });
-        queryClient.refetchQueries({ queryKey: ["trades", data.portfolioId] });
-      },
-      onError: (error: any) => {
-        console.error("Failed to create trade:", error);
-        setErrorMessage(
-          error?.response?.data?.error || "Failed to create trade"
-        );
-      },
-    });
+    setIsPending(true);
+    
+    try {
+      await addTrade(data);
+      setOpen(false);
+      reset();
+      setErrorMessage(null);
+    } catch (error: any) {
+      console.error("Failed to create trade:", error);
+      setErrorMessage(
+        error?.message || "Failed to create trade"
+      );
+    } finally {
+      setIsPending(false);
+    }
   };
 
   useEffect(() => {
