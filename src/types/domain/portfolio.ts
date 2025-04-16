@@ -3,4 +3,5 @@ export interface Portfolio {
   title: string;
   userId: string;
   createdAt: string;
+  balance: number;
 }

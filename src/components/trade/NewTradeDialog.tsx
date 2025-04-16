@@ -25,12 +25,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssets } from "@/hooks/queries/useAssets";
+import { NewTradeDialogProps } from "@/types/ui/NewTradeDialogProps";
 
-export const NewTradeDialog = () => {
-  const [open, setOpen] = useState(false);
+
+
+export const NewTradeDialog = ({ open: externalOpen, setOpen: setExternalOpen, trigger }: NewTradeDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { selectedPortfolioId, addTrade } = usePortfolio();
+  
+  const isControlled = externalOpen !== undefined && setExternalOpen !== undefined;
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = isControlled ? setExternalOpen : setInternalOpen;
   
   const {
     data: assets = [],
@@ -125,9 +132,12 @@ export const NewTradeDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">+ Trade</Button>
-      </DialogTrigger>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      {!trigger && !isControlled && (
+        <DialogTrigger asChild>
+          <Button variant="outline">+ Trade</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>New Trade</DialogTitle>
