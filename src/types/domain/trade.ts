@@ -53,15 +53,3 @@ export interface TradeCardData {
   profit: number;
   date: string;
 }
-
-export interface TradeCardProps {
-  id?: string;
-  ticker: string;
-  entry: number;
-  exit: number;
-  qty: number;
-  profit: number;
-  date: string;
-  onDelete?: () => void;
-  onEdit?: () => void;
-}

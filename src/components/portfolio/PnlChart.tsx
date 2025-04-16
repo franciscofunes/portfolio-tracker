@@ -16,7 +16,7 @@ import { PnlChartProps } from "@/types/ui/PnlChartProps";
 
 export default function PnlChart({ trades }: PnlChartProps) {
   const { selectedPortfolioId } = usePortfolio();
-  const { data, isLoading } = useTrades(selectedPortfolioId);
+  const { data, isLoading } = useTrades(selectedPortfolioId || "");
   
   const tradesData = trades || data || [];
 
