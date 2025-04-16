@@ -21,6 +21,7 @@ import {
 const PortfolioContext = createContext<EnhancedPortfolioContextType>({
   selectedPortfolioId: null,
   setSelectedPortfolioId: () => {},
+  selectedPortfolio: null,
   portfolios: [],
   isLoading: false,
   isError: false,
@@ -115,19 +116,20 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   return (
     <PortfolioContext.Provider
       value={{
-        selectedPortfolioId,
-        setSelectedPortfolioId,
-        portfolios,
-        isLoading,
-        isError,
-        error,
-        trades,
-        isLoadingTrades,
-        tradeError: tradesError ? new Error(String(tradesError)) : null,
-        refreshTrades,
-        addTrade,
-        deleteTrade,
-        updateTrade,
+      selectedPortfolioId,
+      setSelectedPortfolioId,
+      selectedPortfolio: portfolios.find((p: { id: string }) => p.id === selectedPortfolioId) || null,
+      portfolios,
+      isLoading,
+      isError,
+      error,
+      trades,
+      isLoadingTrades,
+      tradeError: tradesError ? new Error(String(tradesError)) : null,
+      refreshTrades,
+      addTrade,
+      deleteTrade,
+      updateTrade,
       }}
     >
       {children}
