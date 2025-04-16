@@ -13,14 +13,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreatePortfolio } from "@/hooks/mutations/userCreatePortfolio";
 import { useCurrentUser } from "@/hooks/queries/useCurrentUser";
+import { NewPortfolioDialogProps } from "@/types/ui/NewPortfolioDialogProps";
 import { portfolioSchema } from "@/validations/portfolio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-export const NewPortfolioDialog = () => {
-  const [open, setOpen] = useState(false);
+
+
+export const NewPortfolioDialog = ({ open: externalOpen, setOpen: setExternalOpen, trigger }: NewPortfolioDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  const isControlled = externalOpen !== undefined && setExternalOpen !== undefined;
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = isControlled ? setExternalOpen : setInternalOpen;
+  
   const {
     mutate,
     isPending: isCreating,
@@ -65,11 +73,21 @@ export const NewPortfolioDialog = () => {
     );
   };
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+      setErrorMessage(null);
+    }
+  }, [open, reset]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">+ Portfolio</Button>
-      </DialogTrigger>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      {!trigger && !isControlled && (
+        <DialogTrigger asChild>
+          <Button variant="outline">+ Portfolio</Button>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Portfolio</DialogTitle>
