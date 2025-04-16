@@ -35,8 +35,11 @@ export function useUpdateTrade() {
 
       return api.put(`trades/${portfolioId}/${tradeId}`, payload);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["portfolio-trades"] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["trades", variables.portfolioId] });
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+      
+      queryClient.refetchQueries({ queryKey: ["trades", variables.portfolioId] });
     },
   });
 }
