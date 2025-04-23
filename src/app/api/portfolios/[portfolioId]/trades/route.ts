@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import { PortfolioRouteParams } from "@/types/routes/routes";
 import { tradeFormSchema } from "@/validations/trade";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { portfolioId: string } }
+  context: PortfolioRouteParams
 ) {
   try {
     const { portfolioId } = await context.params;
@@ -40,10 +41,10 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  context: { params: { portfolioId: string } }
+  context: PortfolioRouteParams
 ) {
   try {
-    const portfolioId = context.params.portfolioId;
+    const { portfolioId } = await context.params;
     
     if (!portfolioId) {
       return NextResponse.json(
