@@ -1,5 +1,5 @@
 export type RouteParams<T extends Record<string, string>> = {
-  params: T;
+  params: Promise<T>;
 };
 
 export type SymbolRouteParams = RouteParams<{ symbol: string }>;
