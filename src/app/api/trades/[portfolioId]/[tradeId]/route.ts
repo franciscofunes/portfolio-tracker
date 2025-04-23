@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import { PortfolioTradeRouteParams } from "@/types/routes/routes";
 import { tradeFormSchema } from "@/validations/trade";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  context: { params: { portfolioId: string; tradeId: string } }
+  context: PortfolioTradeRouteParams
 ) {
   try {
     const { portfolioId, tradeId } = await context.params;
@@ -88,7 +89,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { portfolioId: string; tradeId: string } }
+  context: PortfolioTradeRouteParams
 ) {
   try {
     const { portfolioId, tradeId } = await context.params;
