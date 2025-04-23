@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
+  request: NextRequest,
   { params }: { params: { symbol: string } }
 ) {
   const asset = await prisma.asset.findFirst({
-    where: { symbol: await params.symbol.toUpperCase() },
+    where: { symbol: params.symbol.toUpperCase() },
   });
 
   if (!asset) {
