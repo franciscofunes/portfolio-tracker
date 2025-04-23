@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { SymbolRouteParams } from "@/types/routes/routes";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { symbol: string } }
-) {
+export async function GET(request: NextRequest, context: SymbolRouteParams) {
+  const { symbol } = context.params;
+
   const asset = await prisma.asset.findFirst({
-    where: { symbol: params.symbol.toUpperCase() },
+    where: { symbol: symbol.toUpperCase() },
   });
 
   if (!asset) {
