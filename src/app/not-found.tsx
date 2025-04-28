@@ -29,7 +29,7 @@ export default function NotFound(): React.ReactNode {
         <div className="w-16 h-1 mx-auto bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
         
         <p className="text-gray-600 dark:text-gray-400">
-          Looks like we couldn't find the investment opportunity you were looking for.
+          Looks like we couldn&apos;t find the investment opportunity you were looking for.
           The chart pattern suggests a return to the homepage.
         </p>
         
