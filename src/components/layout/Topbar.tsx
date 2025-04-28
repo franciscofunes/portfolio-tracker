@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePortfolio } from "@/Contexts/PortfolioContext";
 import { AlertTriangle } from "lucide-react";
 import PortfolioSelector from "../portfolio/PortfolioSelector";
+import { Transaction } from "@/types/domain/transaction";
 
 export const TopBar = () => {
   const {
@@ -16,7 +17,7 @@ export const TopBar = () => {
     error,
   } = usePortfolio();
 
-  const calculatePortfolioValue = (transactions: any[]) => {
+  const calculatePortfolioValue = (transactions: Transaction[]) => {
     return transactions.reduce((total, transaction) => {
       return total + transaction.quantity * transaction.price;
     }, 0);
