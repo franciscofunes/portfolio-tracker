@@ -46,20 +46,6 @@ export default function DashboardPage() {
     );
   }
 
-  const tradeDialogTrigger = (
-    <Button variant="outline" size="sm" className="hidden md:flex">
-      <Plus className="mr-1 h-4 w-4" />
-      Trade
-    </Button>
-  );
-
-  const portfolioDialogTrigger = (
-    <Button variant="outline" size="sm" className="hidden md:flex">
-      <Plus className="mr-1 h-4 w-4" />
-      Portfolio
-    </Button>
-  );
-
   return (
     <div className="flex min-h-screen bg-background relative">
       <Sidebar />
