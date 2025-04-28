@@ -1,17 +1,18 @@
 import { EditTradeFormValues, TradeFormValues } from "@/validations/trade";
 import { Portfolio } from "../domain/portfolio";
+import { Trade } from "../domain/trade";
 
 export interface PortfolioContextType {
   selectedPortfolioId: string | null;
   setSelectedPortfolioId: (id: string) => void;
-  portfolios: any[];
+  portfolios: Portfolio[];
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
 }
 
 export interface EnhancedPortfolioContextType extends PortfolioContextType {
-  trades: any[];
+  trades: Trade[];
   isLoadingTrades: boolean;
   tradeError: Error | null;
   selectedPortfolio: Portfolio | null;
