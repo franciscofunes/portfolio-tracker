@@ -6,3 +6,12 @@ export type SymbolRouteParams = RouteParams<{ symbol: string }>;
 export type IdRouteParams = RouteParams<{ id: string }>;
 export type PortfolioRouteParams = RouteParams<{ portfolioId: string }>;
 export type PortfolioTradeRouteParams = RouteParams<{ portfolioId: string; tradeId: string }>;
+
+export interface ApiError {
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+  message?: string;
+}

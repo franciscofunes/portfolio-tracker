@@ -13,14 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreatePortfolio } from "@/hooks/mutations/userCreatePortfolio";
 import { useCurrentUser } from "@/hooks/queries/useCurrentUser";
+import { ApiError } from "@/types/routes/routes";
 import { NewPortfolioDialogProps } from "@/types/ui/NewPortfolioDialogProps";
 import { portfolioSchema } from "@/validations/portfolio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
-
 
 export const NewPortfolioDialog = ({ open: externalOpen, setOpen: setExternalOpen, trigger }: NewPortfolioDialogProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -63,10 +62,10 @@ export const NewPortfolioDialog = ({ open: externalOpen, setOpen: setExternalOpe
           setOpen(false);
           reset();
         },
-        onError: (err: any) => {
+        onError: (err: ApiError) => {
           console.error("Mutation error:", err);
           setErrorMessage(
-            err?.response?.data?.error || "Failed to create portfolio"
+            err?.response?.data?.error || err?.message || "Failed to create portfolio"
           );
         },
       }
