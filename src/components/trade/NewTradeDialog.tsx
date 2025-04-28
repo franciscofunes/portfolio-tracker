@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssets } from "@/hooks/queries/useAssets";
+import { ApiError } from "@/types/routes/routes";
 import { NewTradeDialogProps } from "@/types/ui/NewTradeDialogProps";
 import { tradeFormSchema, TradeFormValues } from "@/validations/trade";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -105,10 +106,10 @@ export const NewTradeDialog = ({ open: externalOpen, setOpen: setExternalOpen, t
       setOpen(false);
       reset();
       setErrorMessage(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create trade:", error);
       setErrorMessage(
-        error?.message || "Failed to create trade"
+        (error as ApiError)?.message || "Failed to create trade"
       );
     } finally {
       setIsPending(false);
