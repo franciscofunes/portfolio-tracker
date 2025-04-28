@@ -3,16 +3,14 @@
 import { Footer } from "@/components/layout/Footer";
 import Sidebar from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/Topbar";
+import { NewPortfolioDialog } from "@/components/portfolio/NewPortfolioDialog";
 import PnlChart from "@/components/portfolio/PnlChart";
+import { NewTradeDialog } from "@/components/trade/NewTradeDialog";
 import { TradeList } from "@/components/trade/TradeList";
+import MobileNavigation from "@/components/ui/mobile-navigation";
 import { Progress } from "@/components/ui/progress";
 import { usePortfolio } from "@/Contexts/PortfolioContext";
 import { useState } from "react";
-import { NewTradeDialog } from "@/components/trade/NewTradeDialog";
-import { NewPortfolioDialog } from "@/components/portfolio/NewPortfolioDialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import MobileNavigation from "@/components/ui/mobile-navigation";
 
 export default function DashboardPage() {
   const { 
@@ -45,6 +43,7 @@ export default function DashboardPage() {
       </div>
     );
   }
+
 
   return (
     <div className="flex min-h-screen bg-background relative">
