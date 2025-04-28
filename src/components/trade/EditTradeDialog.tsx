@@ -70,9 +70,9 @@ export const EditTradeDialog = ({
       setErrorMessage(null);
       if (onSuccess) onSuccess();
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to update trade:", error);
-      setErrorMessage(error?.message || "Failed to update trade");
+      setErrorMessage((error as { message?: string })?.message || "Failed to update trade");
     } finally {
       setIsPending(false);
     }
