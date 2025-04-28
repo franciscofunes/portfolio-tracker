@@ -1,10 +1,24 @@
+// src/types/domain/trade.ts
 export interface Trade {
   id: string;
-  ticker: string;
-  date: string;
-  entry: number;
-  exit: number;
+  type: string;
   quantity: number;
+  price: number;
+  exitPrice?: number | null;
+  date: string;
+  portfolioId: string;
+  assetId: string;
+  asset: {
+    id: string;
+    symbol: string;
+    name: string;
+    assetType: string;
+    createdAt: string;
+  };
+  // Client-side properties
+  ticker?: string;
+  entry?: number;
+  exit?: number;
 }
 
 export type NewTrade = {

@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import { faker } from "@faker-js/faker";
+import { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
+import { faker } from "@faker-js/faker";
+import { NextResponse } from "next/server";
 
 const ASSETS = [
   { symbol: "AAPL", name: "Apple Inc.", assetType: "Stock" },
@@ -71,9 +72,9 @@ export async function POST() {
   } catch (error) {
     if (error instanceof Error) {
       console.error("Detailed error:", {
-        code: (error as any).code,
+        code: Prisma.PrismaClientKnownRequestError.isPrototypeOf(error) ? (error as Prisma.PrismaClientKnownRequestError).code : undefined,
         message: error.message,
-        meta: (error as any).meta,
+        meta: "meta" in error ? (error as Prisma.PrismaClientKnownRequestError).meta : undefined,
       });
     } else {
       console.error("Unknown error:", error);
